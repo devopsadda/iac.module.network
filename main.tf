@@ -150,7 +150,7 @@ resource "aws_route" "private_route" {
 }
 
 resource "aws_eip" "doa_nat_eip" {
-  vpc      = true
+  domain     = "vpc"
   depends_on = [aws_internet_gateway.doa_internet_gateway]
 }
 
