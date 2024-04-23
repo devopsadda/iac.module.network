@@ -14,3 +14,5 @@ variable "security_groups" {}
 variable "db_subnet_group" {}
 
 variable "access_ip" {}
+variable "project" {}
+variable "environment" {}
