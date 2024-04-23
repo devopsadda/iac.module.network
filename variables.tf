@@ -1,4 +1,7 @@
-variable "doa_vpc_cidr" {}
+variable "doa_vpc_cidr" {
+  type = string  
+  description = "cidr block for the VPC"
+}
 
 variable "doa_subnet_web01_public_cidr" {}
 variable "doa_subnet_web02_public_cidr" {}
