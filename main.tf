@@ -8,8 +8,10 @@ resource "aws_vpc" "doa_vpc" {
   enable_dns_support   = true
 
   tags = {
-    Name = "doa_vpc"
+    Name = "${var.project}-vpc-${var.environment}"
+    Environment = var.environment
   }
+
   lifecycle {
     create_before_destroy = true
   }
@@ -22,7 +24,8 @@ resource "aws_subnet" "doa_subnet_web01_public" {
   availability_zone       = data.aws_availability_zones.available.names[0]
 
   tags = {
-    Name = "doa_subnet_web01_public"
+    Name = "${var.project}-subnet-web01-public-${var.environment}"
+    Environment = var.environment
   }
 }
 
@@ -33,7 +36,8 @@ resource "aws_subnet" "doa_subnet_web02_public" {
   availability_zone       = data.aws_availability_zones.available.names[1]
 
   tags = {
-    Name = "doa_subnet_web02_public"
+    Name = "${var.project}-subnet-web02-public-${var.environment}"
+    Environment = var.environment
   }
 }
 
@@ -44,8 +48,10 @@ resource "aws_subnet" "doa_subnet_app01_private" {
   availability_zone       = data.aws_availability_zones.available.names[0]
 
   tags = {
-    Name = "doa_subnet_app01_private"
+    Name = "${var.project}-subnet-app01-private-${var.environment}"
+    Environment = var.environment
   }
+
 }
 
 resource "aws_subnet" "doa_subnet_app02_private" {
@@ -55,7 +61,8 @@ resource "aws_subnet" "doa_subnet_app02_private" {
   availability_zone       = data.aws_availability_zones.available.names[1]
 
   tags = {
-    Name = "doa_subnet_app02_private"
+    Name = "${var.project}-subnet-app02-private-${var.environment}"
+    Environment = var.environment
   }
 }
 
@@ -66,7 +73,8 @@ resource "aws_subnet" "doa_subnet_db01_private" {
   availability_zone       = data.aws_availability_zones.available.names[0]
 
   tags = {
-    Name = "doa_subnet_db01_private"
+    Name = "${var.project}-subnet-db01-private-${var.environment}"
+    Environment = var.environment
   }
 }
 
@@ -77,7 +85,8 @@ resource "aws_subnet" "doa_subnet_db02_private" {
   availability_zone       = data.aws_availability_zones.available.names[1]
 
   tags = {
-    Name = "doa_subnet_db02_private"
+    Name = "${var.project}-subnet-db02-private-${var.environment}"
+    Environment = var.environment
   }
 }
 
@@ -85,7 +94,8 @@ resource "aws_internet_gateway" "doa_internet_gateway" {
   vpc_id = aws_vpc.doa_vpc.id
 
   tags = {
-    Name = "doa_igw"
+    Name = "${var.project}-igw-${var.environment}"
+    Environment = var.environment
   }
 }
 
@@ -93,7 +103,8 @@ resource "aws_route_table" "doa_public_rt" {
   vpc_id = aws_vpc.doa_vpc.id
 
   tags = {
-    Name = "doa_rt_public"
+    Name = "${var.project}-rt-public-${var.environment}"
+    Environment = var.environment
   }
 }
 
@@ -119,7 +130,8 @@ resource "aws_route_table" "doa_private_rt" {
   vpc_id = aws_vpc.doa_vpc.id
   
   tags = {
-    Name = "doa_rt_private"
+    Name = "${var.project}-rt-private-${var.environment}"
+    Environment = var.environment
   }
 }
 
@@ -160,33 +172,7 @@ resource "aws_nat_gateway" "doa_ngw" {
   depends_on = [aws_internet_gateway.doa_internet_gateway]
 
   tags = {
-    Name = "doa_ngw"
-  }
-}
-
-resource "aws_security_group" "doa_sg" {
-  for_each    = var.security_groups
-  name        = each.value.name
-  description = each.value.description
-  vpc_id      = aws_vpc.doa_vpc.id
-
-
-
-# public Security Group
-  dynamic "ingress" {
-    for_each = each.value.ingress
-    content {
-      from_port   = ingress.value.from
-      to_port     = ingress.value.to
-      protocol    = ingress.value.protocol
-      cidr_blocks = ingress.value.cidr_blocks
-    }
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    Name = "${var.project}-ngw-${var.environment}"
+    Environment = var.environment
   }
 }
